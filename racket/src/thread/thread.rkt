@@ -155,11 +155,13 @@
 
 (define (do-make-thread who
                         proc
+                        #:name [th-name #f]
                         #:custodian [c (current-custodian)] ; can be #f
                         #:at-root? [at-root? #f]
                         #:initial? [initial? #f]
                         #:suspend-to-kill? [suspend-to-kill? #f])
   (check who (procedure-arity-includes/c 0) proc)
+  (check who #:or-false symbol? th-name)
   (define p (if (or at-root? initial?)
                 root-thread-group
                 (current-thread-group)))
@@ -173,7 +175,7 @@
   (define t (thread 'none ; node prev
                     'none ; node next
                     
-                    (object-name proc)
+                    (or th-name (object-name proc))
                     e
                     p
                     #f ; sleeping
@@ -216,12 +218,12 @@
   t)
 
 (define make-thread
-  (let ([thread (lambda (proc)
-                  (do-make-thread 'thread proc))])
+  (let ([thread (lambda (proc #:name [th-name #f])
+                  (do-make-thread 'thread proc #:name th-name))])
     thread))
 
-(define (thread/suspend-to-kill proc)
-  (do-make-thread 'thread/suspend-to-kill proc #:suspend-to-kill? #t))
+(define (thread/suspend-to-kill proc #:name [th-name #f])
+  (do-make-thread 'thread/suspend-to-kill proc #:name th-name #:suspend-to-kill? #t))
 
 (define (make-initial-thread thunk)
   (let ([t (do-make-thread 'thread thunk #:initial? #t)])

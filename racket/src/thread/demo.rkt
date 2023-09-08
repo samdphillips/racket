@@ -296,6 +296,12 @@
    (check-break/kill #:kill? #f)
    (check-break/kill #:kill? #t)
 
+   ;; Check thread names
+   (check 'thread1
+          (object-name (thread (procedure-rename (lambda () 'x) 'thread1))))
+   (check 'thread2
+          (object-name (thread (lambda () 'x) #:name 'thread2)))
+
    ;; Check that an ignored break doesn't interfere with semaphore waiting, etc.
    (define (check-ignore-break-retry make-trigger trigger-post trigger-wait)
      (define s/nb (make-trigger))
