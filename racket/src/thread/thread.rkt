@@ -218,7 +218,7 @@
   t)
 
 (define make-thread
-  (let ([thread (lambda (proc #:name [th-name #f])
+  (let ([thread (lambda (proc [th-name #f])
                   (do-make-thread 'thread proc #:name th-name))])
     thread))
 
