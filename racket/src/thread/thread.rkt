@@ -222,8 +222,8 @@
                   (do-make-thread 'thread proc #:name th-name))])
     thread))
 
-(define (thread/suspend-to-kill proc)
-  (do-make-thread 'thread/suspend-to-kill proc #:suspend-to-kill? #t))
+(define (thread/suspend-to-kill proc [th-name #f])
+  (do-make-thread 'thread/suspend-to-kill proc #:name th-name #:suspend-to-kill? #t))
 
 (define (make-initial-thread thunk)
   (let ([t (do-make-thread 'thread thunk #:initial? #t)])
