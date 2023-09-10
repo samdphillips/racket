@@ -30,7 +30,8 @@
                               regexp-replace*
                               new-apply-proc
                               do-raise-syntax-error
-                              raise-syntax-error)
+                              raise-syntax-error
+                              thread)
              struct
              (all-from-except "hash.rkt" paired-fold)
              (all-from "list.rkt")
@@ -58,5 +59,6 @@
              (rename -directory-list directory-list)
              (rename -copy-file copy-file)
              (rename -raise-syntax-error raise-syntax-error)
+             (rename -thread thread)
              call-with-input-file*
              call-with-output-file*))

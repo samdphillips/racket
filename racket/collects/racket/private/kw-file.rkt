@@ -11,7 +11,8 @@
             [call-with-output-file  -call-with-output-file]
             [with-input-from-file   -with-input-from-file]
             [with-output-to-file    -with-output-to-file]
-            [raise-syntax-error     -raise-syntax-error])
+            [raise-syntax-error     -raise-syntax-error]
+            [thread                 -thread])
            call-with-input-file*
            call-with-output-file*
            (rename-out
@@ -197,4 +198,8 @@
     (do-raise-syntax-error 'raise-syntax-error exn given-name message
                            expr sub-expr
                            extra-sources
-                           message-suffix)))
+                           message-suffix))
+
+  (define (thread thunk #:name [th-name #f])
+    (let ([thunk (if th-name (procedure-rename thunk th-name) thunk)])
+      (k:thread thunk))))
