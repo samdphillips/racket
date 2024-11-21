@@ -27,6 +27,8 @@
 (provide
  ;; Parameter
  json-null
+ json-key-maker
+ json-list-maker
 
  ;; Any -> Boolean
  jsexpr?
@@ -70,6 +72,9 @@
 
 ;; The default translation for a JSON `null' value
 (define json-null (make-parameter 'null))
+(define json-key-maker (make-parameter string->symbol))
+(define json-list-maker (make-parameter values))
+
 
 ;; -----------------------------------------------------------------------------
 ;; PREDICATE
@@ -206,9 +211,9 @@
 ;; PARSING (from JSON to Racket)
 
 (define (read-json [i (current-input-port)] #:null [jsnull (json-null)])
-  (read-json* 'read-json i jsnull))
+  (read-json* 'read-json i jsnull (json-key-maker) (json-list-maker)))
 
-(define (read-json* who i jsnull)
+(define (read-json* who i jsnull make-json-key make-json-list)
   ;; Follows the specification (eg, at json.org) -- no extensions.
   ;;
   (define (err fmt . args)
@@ -339,13 +344,13 @@
     (define ch (skip-whitespace))
     (cond
       [(eqv? end ch) (read-byte i)
-                     '()]
+                     (make-json-list '())]
       [else
        (let loop ([l (list (read-one))])
          (define ch (skip-whitespace))
          (cond
            [(eqv? ch end) (read-byte i)
-                          (reverse l)]
+                          (make-json-list (reverse l))]
            [(eqv? ch #\,) (read-byte i)
                           (loop (cons (read-one) l))]
            [else
@@ -363,7 +368,7 @@
       (unless (char=? #\: ch)
         (err "error while parsing a json object pair"))
       (read-byte i)
-      (cons (string->symbol k) (read-json)))
+      (cons (make-json-key k) (read-json)))
     (for/hasheq ([p (in-list (read-list 'object #\} read-pair))])
       (values (car p) (cdr p))))
   ;;
