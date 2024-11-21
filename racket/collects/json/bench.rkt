@@ -7,6 +7,7 @@
          racket/port
          racket/string
          racket/system
+         racket/treelist
 
          (prefix-in rkt: json)
          (prefix-in exp: json/exp))
@@ -28,6 +29,11 @@
      (let rec ()
        (unless (eof-object? (rd in)) (rec))))
    name))
+
+(define (extended-reader in)
+  (parameterize ([exp:json-key-maker string->immutable-string]
+                 [exp:json-list-maker list->treelist])
+    (exp:read-json in)))
 
 (define (run)
   (define opts
@@ -56,7 +62,8 @@
   (define size (bytes-length input-bytes))
   (define cur-t (current-seconds))
   (for* ([rd (list (make-read-all 'rkt rkt:read-json)
-                   (make-read-all 'exp exp:read-json))]
+                   (make-read-all 'exp exp:read-json)
+                   (make-read-all 'ext extended-reader))]
          [i (opt-iters opts)])
     (define-values (res t-cpu t-real t-gc)
       (call-with-input-bytes input-bytes
