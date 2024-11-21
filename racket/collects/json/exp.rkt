@@ -344,13 +344,13 @@
     (define ch (skip-whitespace))
     (cond
       [(eqv? end ch) (read-byte i)
-                     (make-json-list '())]
+                     '()]
       [else
        (let loop ([l (list (read-one))])
          (define ch (skip-whitespace))
          (cond
            [(eqv? ch end) (read-byte i)
-                          (make-json-list (reverse l))]
+                          (reverse l)]
            [(eqv? ch #\,) (read-byte i)
                           (loop (cons (read-one) l))]
            [else
@@ -531,7 +531,8 @@
       [(eqv? ch #\") (read-byte i)
                      (read-a-string)]
       [(eqv? ch #\[) (read-byte i)
-                     (read-list 'array #\] read-json)]
+                     (make-json-list
+                      (read-list 'array #\] read-json))]
       [(eqv? ch #\{) (read-byte i)
                      (read-hash)]
       [else (bad-input)]))
