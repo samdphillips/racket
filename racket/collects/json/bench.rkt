@@ -6,6 +6,7 @@
          racket/file
          racket/port
          racket/string
+         racket/symbol
          racket/system
          racket/treelist
 
@@ -37,7 +38,8 @@
   (exp:read-json* 'ext:read-json
                   in
                   (exp:json-null)
-                  string->immutable-string
+                  (lambda (s)
+                    (symbol->immutable-string (string->symbol s)))
                   list->treelist))
 
 (define (run)
