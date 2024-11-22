@@ -10,7 +10,10 @@
          racket/treelist
 
          (prefix-in rkt: json)
-         (prefix-in exp: json/exp))
+         (prefix-in exp:
+                    (combine-in
+                     json/exp
+                     (submod json/exp for-extension))))
 
 (define-syntax define-opt
   (lambda (stx)
@@ -31,9 +34,11 @@
    name))
 
 (define (extended-reader in)
-  (parameterize ([exp:json-key-maker string->immutable-string]
-                 [exp:json-list-maker list->treelist])
-    (exp:read-json in)))
+  (exp:read-json* 'ext:read-json
+                  in
+                  (exp:json-null)
+                  string->immutable-string
+                  list->treelist))
 
 (define (run)
   (define opts

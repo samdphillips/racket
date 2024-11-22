@@ -27,8 +27,6 @@
 (provide
  ;; Parameter
  json-null
- json-key-maker
- json-list-maker
 
  ;; Any -> Boolean
  jsexpr?
@@ -66,6 +64,9 @@
         (#:null any/c) ;; (json-null)
         any)] ;; jsexpr?
   ))
+
+(module* for-extension #f
+  (provide read-json*))
 
 ;; -----------------------------------------------------------------------------
 ;; CUSTOMIZATION
