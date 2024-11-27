@@ -373,10 +373,7 @@
         (err "error while parsing a json object pair"))
       (read-byte i)
       (cons (make-json-key k) (read-json)))
-    (make-json-object (read-list 'object #\} read-pair))
-    #;
-    (for/hasheq ([p (in-list (read-list 'object #\} read-pair))])
-      (values (car p) (cdr p))))
+    (make-json-object (read-list 'object #\} read-pair)))
   ;;
   (define (read-literal bstr)
     (define len (bytes-length bstr))

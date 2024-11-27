@@ -42,8 +42,7 @@
                   (exp:json-null)
                   make-immutable-hashalw
                   list->treelist
-                  (lambda (s)
-                    (symbol->immutable-string (string->symbol s)))
+                  string->immutable-string
                   string->immutable-string))
 
 ;; corrsponds to rhombus/c34e6c0c
