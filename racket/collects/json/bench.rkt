@@ -14,7 +14,9 @@
          (prefix-in exp:
                     (combine-in
                      json/exp
-                     (submod json/exp for-extension))))
+                     (submod json/exp for-extension)))
+
+         (prefix-in rhm: (lib "rhombus/json.rhm")))
 
 (define-syntax define-opt
   (lambda (stx)
@@ -42,6 +44,9 @@
                     (symbol->immutable-string (string->symbol s)))
                   list->treelist
                   string->immutable-string))
+
+;; corrsponds to rhombus/05bca299
+(define (rhm-reader in) (rhm:read in))
 
 (define (run)
   (define opts
@@ -71,7 +76,8 @@
   (define cur-t (current-seconds))
   (for* ([rd (list (make-read-all 'rkt rkt:read-json)
                    (make-read-all 'exp exp:read-json)
-                   (make-read-all 'ext extended-reader))]
+                   (make-read-all 'ext extended-reader)
+                   (make-read-all 'rhm rhm-reader))]
          [i (opt-iters opts)])
     (define-values (res t-cpu t-real t-gc)
       (call-with-input-bytes input-bytes
