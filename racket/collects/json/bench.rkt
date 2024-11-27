@@ -40,12 +40,13 @@
   (exp:read-json* 'ext:read-json
                   in
                   (exp:json-null)
+                  make-immutable-hashalw
+                  list->treelist
                   (lambda (s)
                     (symbol->immutable-string (string->symbol s)))
-                  list->treelist
                   string->immutable-string))
 
-;; corrsponds to rhombus/05bca299
+;; corrsponds to rhombus/c34e6c0c
 (define (rhm-reader in) (rhm:read in))
 
 (define (run)

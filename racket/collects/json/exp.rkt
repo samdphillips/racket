@@ -210,9 +210,14 @@
 ;; PARSING (from JSON to Racket)
 
 (define (read-json [i (current-input-port)] #:null [jsnull (json-null)])
-  (read-json* 'read-json i jsnull string->symbol values values))
+  (read-json* 'read-json i jsnull make-immutable-hasheq values string->symbol values))
 
-(define (read-json* who i jsnull make-json-key make-json-list make-json-string)
+(define (read-json* who i
+                    jsnull
+                    make-json-object
+                    make-json-list
+                    make-json-key
+                    make-json-string)
   ;; Follows the specification (eg, at json.org) -- no extensions.
   ;;
   (define (err fmt . args)
@@ -368,6 +373,8 @@
         (err "error while parsing a json object pair"))
       (read-byte i)
       (cons (make-json-key k) (read-json)))
+    (make-json-object (read-list 'object #\} read-pair))
+    #;
     (for/hasheq ([p (in-list (read-list 'object #\} read-pair))])
       (values (car p) (cdr p))))
   ;;
