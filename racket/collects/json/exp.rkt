@@ -73,8 +73,6 @@
 
 ;; The default translation for a JSON `null' value
 (define json-null (make-parameter 'null))
-(define json-key-maker (make-parameter string->symbol))
-(define json-list-maker (make-parameter values))
 
 
 ;; -----------------------------------------------------------------------------
@@ -212,7 +210,7 @@
 ;; PARSING (from JSON to Racket)
 
 (define (read-json [i (current-input-port)] #:null [jsnull (json-null)])
-  (read-json* 'read-json i jsnull (json-key-maker) (json-list-maker)))
+  (read-json* 'read-json i jsnull string->symbol values))
 
 (define (read-json* who i jsnull make-json-key make-json-list)
   ;; Follows the specification (eg, at json.org) -- no extensions.
