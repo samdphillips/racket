@@ -210,9 +210,9 @@
 ;; PARSING (from JSON to Racket)
 
 (define (read-json [i (current-input-port)] #:null [jsnull (json-null)])
-  (read-json* 'read-json i jsnull string->symbol values))
+  (read-json* 'read-json i jsnull string->symbol values values))
 
-(define (read-json* who i jsnull make-json-key make-json-list)
+(define (read-json* who i jsnull make-json-key make-json-list make-json-string)
   ;; Follows the specification (eg, at json.org) -- no extensions.
   ;;
   (define (err fmt . args)
@@ -528,7 +528,7 @@
            (eqv? ch #\-))
        (read-number ch)]
       [(eqv? ch #\") (read-byte i)
-                     (read-a-string)]
+                     (make-json-string (read-a-string))]
       [(eqv? ch #\[) (read-byte i)
                      (make-json-list
                       (read-list 'array #\] read-json))]

@@ -40,7 +40,8 @@
                   (exp:json-null)
                   (lambda (s)
                     (symbol->immutable-string (string->symbol s)))
-                  list->treelist))
+                  list->treelist
+                  string->immutable-string))
 
 (define (run)
   (define opts
